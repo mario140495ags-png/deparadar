@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DepaRadar — Encuentra depa o roomie, con calma</title>
+<meta name="description" content="Nos dices qué buscas una vez. Cada día revisamos los portales, descartamos los anuncios sospechosos y te mandamos los mejores departamentos y cuartos por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:#F3F5F1; --surface:#FBFCFA; --surface-2:#EFF2EC;
+    --ink:#26302A; --ink-2:#586359; --ink-3:#8A938B;
+    --line:#E2E6DE; --line-soft:#EAEDE6;
+    --accent:#3F7A5E; --accent-deep:#2C5A45; --accent-soft:#E6EFE8;
+    --wa:#4B7C63; --wa-ink:#FFFFFF;
+    --shadow:0 1px 2px rgba(38,48,42,.04), 0 12px 32px -16px rgba(38,48,42,.14);
+    --r:16px; --r-sm:11px;
+    --serif:'Fraunces', Georgia, 'Times New Roman', serif;
+    --sans:'Mulish', system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#161C19; --surface:#1E2622; --surface-2:#232C27;
+      --ink:#E9EDE7; --ink-2:#A6AFA7; --ink-3:#79837B;
+      --line:#2C352F; --line-soft:#252E29;
+      --accent:#77AC8E; --accent-deep:#9ECBB1; --accent-soft:#212B25;
+      --wa:#3D5C4B; --wa-ink:#EAF2ED;
+      --shadow:0 1px 2px rgba(0,0,0,.2), 0 16px 40px -20px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper:#F3F5F1; --surface:#FBFCFA; --surface-2:#EFF2EC;
+    --ink:#26302A; --ink-2:#586359; --ink-3:#8A938B;
+    --line:#E2E6DE; --line-soft:#EAEDE6;
+    --accent:#3F7A5E; --accent-deep:#2C5A45; --accent-soft:#E6EFE8;
+    --wa:#4B7C63; --wa-ink:#FFFFFF;
+    --shadow:0 1px 2px rgba(38,48,42,.04), 0 12px 32px -16px rgba(38,48,42,.14);
+  }
+  :root[data-theme="dark"] {
+    --paper:#161C19; --surface:#1E2622; --surface-2:#232C27;
+    --ink:#E9EDE7; --ink-2:#A6AFA7; --ink-3:#79837B;
+    --line:#2C352F; --line-soft:#252E29;
+    --accent:#77AC8E; --accent-deep:#9ECBB1; --accent-soft:#212B25;
+    --wa:#3D5C4B; --wa-ink:#EAF2ED;
+    --shadow:0 1px 2px rgba(0,0,0,.2), 0 16px 40px -20px rgba(0,0,0,.5);
+  }
+
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+  body {
+    background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:17px; line-height:1.7;
+    -webkit-font-smoothing:antialiased; letter-spacing:.005em;
+  }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+  .col { max-width:600px; }
+
+  h1,h2,h3 { font-family:var(--serif); font-weight:500; line-height:1.12;
+    letter-spacing:-.01em; text-wrap:balance; color:var(--ink); }
+  h1 { font-size:clamp(2.3rem, 5.2vw, 3.5rem); }
+  h2 { font-size:clamp(1.55rem, 3.4vw, 2.15rem); }
+  h3 { font-size:1.15rem; font-weight:600; }
+  .lead { font-size:clamp(1.05rem,2vw,1.2rem); color:var(--ink-2); }
+  .label { font-family:var(--sans); font-size:.74rem; font-weight:700;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+
+  a { color:var(--accent-deep); }
+
+  /* nav */
+  nav { display:flex; align-items:center; justify-content:space-between;
+    padding:22px 24px; max-width:1040px; margin:0 auto; }
+  .brand { font-family:var(--serif); font-weight:600; font-size:1.35rem;
+    letter-spacing:-.01em; display:flex; align-items:center; gap:9px; }
+  .brand .dot { width:10px; height:10px; border-radius:50%;
+    background:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+  .nav-cta { font-family:var(--sans); font-size:.92rem; font-weight:600;
+    text-decoration:none; color:var(--ink); padding:9px 16px;
+    border:1px solid var(--line); border-radius:99px; transition:.2s; }
+  .nav-cta:hover { border-color:var(--accent); color:var(--accent-deep); }
+
+  /* hero */
+  .hero { padding:56px 0 40px; }
+  .hero .col { max-width:660px; }
+  .hero h1 { margin-bottom:22px; }
+  .hero .lead { margin-bottom:32px; max-width:540px; }
+  .hero-actions { display:flex; flex-wrap:wrap; gap:14px 18px; align-items:center; }
+  .btn { font-family:var(--sans); font-size:1rem; font-weight:700;
+    border:none; border-radius:99px; cursor:pointer; text-decoration:none;
+    display:inline-flex; align-items:center; gap:9px;
+    padding:15px 28px; transition:transform .15s, box-shadow .2s, background .2s; }
+  .btn-primary { background:var(--accent); color:#fff; box-shadow:var(--shadow); }
+  .btn-primary:hover { transform:translateY(-1px); background:var(--accent-deep); }
+  .reassure { display:flex; align-items:center; gap:9px;
+    color:var(--ink-2); font-size:.95rem; }
+  .reassure svg { flex:none; color:var(--accent); }
+
+  section { padding:52px 0; }
+  .section-head { max-width:600px; margin-bottom:36px; }
+  .section-head .label { display:block; margin-bottom:14px; }
+  .section-head p { color:var(--ink-2); margin-top:12px; }
+
+  /* pasos */
+  .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .step { background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:28px 24px; }
+  .step .n { font-family:var(--serif); font-size:1.4rem; color:var(--accent);
+    font-weight:600; margin-bottom:14px; }
+  .step h3 { margin-bottom:8px; }
+  .step p { color:var(--ink-2); font-size:.98rem; line-height:1.6; }
+
+  /* confianza */
+  .trust { background:var(--surface); border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line); }
+  .trust-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:48px; align-items:center; }
+  .checks { display:flex; flex-direction:column; gap:14px; }
+  .check { display:flex; gap:13px; align-items:flex-start; }
+  .check svg { flex:none; margin-top:3px; color:var(--accent); }
+  .check b { font-weight:700; color:var(--ink); }
+  .check span { color:var(--ink-2); font-size:.97rem; }
+
+  /* mockup whatsapp */
+  .phone { background:var(--surface-2); border:1px solid var(--line);
+    border-radius:26px; padding:16px; max-width:340px; margin-left:auto; }
+  .phone-top { display:flex; align-items:center; gap:10px; padding:6px 6px 14px;
+    border-bottom:1px solid var(--line-soft); margin-bottom:14px; }
+  .phone-avatar { width:38px; height:38px; border-radius:50%;
+    background:var(--accent); color:#fff; display:flex; align-items:center;
+    justify-content:center; font-family:var(--serif); font-weight:600; }
+  .phone-name { font-weight:700; font-size:.95rem; }
+  .phone-status { font-size:.78rem; color:var(--ink-3); }
+  .bubble { background:var(--wa); color:var(--wa-ink); border-radius:14px 14px 14px 4px;
+    padding:13px 15px; font-size:.9rem; line-height:1.55; }
+  .bubble .b-title { font-weight:700; margin-bottom:8px; display:block; }
+  .bubble .b-item { display:block; padding:6px 0; border-top:1px solid rgba(255,255,255,.14); }
+  .bubble .b-time { text-align:right; font-size:.68rem; opacity:.7; margin-top:8px; }
+
+  /* formulario */
+  #registro { scroll-margin-top:20px; }
+  .form-card { background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:clamp(28px,4vw,44px); box-shadow:var(--shadow);
+    max-width:620px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px 20px; margin-top:8px; }
+  .field { display:flex; flex-direction:column; gap:7px; }
+  .field.full { grid-column:1 / -1; }
+  .field label { font-size:.86rem; font-weight:600; color:var(--ink); }
+  .field .hint { font-size:.78rem; color:var(--ink-3); font-weight:400; }
+  .field input, .field select { font-family:var(--sans); font-size:1rem;
+    color:var(--ink); background:var(--paper); border:1px solid var(--line);
+    border-radius:var(--r-sm); padding:13px 15px; width:100%; transition:.15s; }
+  .field input:focus, .field select:focus { outline:none;
+    border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .field input::placeholder { color:var(--ink-3); }
+  .form-card .btn-primary { width:100%; justify-content:center; margin-top:6px; }
+  .form-note { font-size:.85rem; color:var(--ink-3); text-align:center; margin-top:16px; }
+  .form-success { display:none; text-align:center; padding:24px 8px; }
+  .form-success.show { display:block; }
+  .form-success .tick { width:56px; height:56px; border-radius:50%;
+    background:var(--accent-soft); color:var(--accent-deep); display:flex;
+    align-items:center; justify-content:center; margin:0 auto 18px; }
+  .form-success h3 { font-size:1.4rem; margin-bottom:8px; }
+  .form-success p { color:var(--ink-2); }
+  .form-err { color:#B4442E; font-size:.86rem; margin-top:4px; display:none; }
+  @media (prefers-color-scheme: dark){ .form-err{ color:#E39280; } }
+
+  /* faq */
+  .faq { display:grid; gap:2px; border-radius:var(--r); overflow:hidden;
+    border:1px solid var(--line); }
+  details { background:var(--surface); }
+  details summary { cursor:pointer; padding:20px 24px; font-weight:600;
+    list-style:none; display:flex; justify-content:space-between; align-items:center;
+    gap:16px; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary .plus { color:var(--accent); font-size:1.3rem; transition:.2s;
+    flex:none; line-height:1; }
+  details[open] summary .plus { transform:rotate(45deg); }
+  details .answer { padding:0 24px 22px; color:var(--ink-2); font-size:.97rem;
+    max-width:60ch; }
+
+  footer { border-top:1px solid var(--line); padding:40px 0 48px; margin-top:20px; }
+  .foot { display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px; color:var(--ink-3); font-size:.88rem; }
+  .foot .brand { font-size:1.1rem; color:var(--ink); }
+
+  @media (max-width:760px) {
+    .steps { grid-template-columns:1fr; }
+    .trust-grid { grid-template-columns:1fr; gap:32px; }
+    .phone { margin:0 auto; }
+    .form-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand"><span class="dot"></span>DepaRadar</span>
+  <a class="nav-cta" href="#registro">Recibir depas</a>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="col">
+      <h1>Encuentra depa o roomie, con calma.</h1>
+      <p class="lead">Nos dices qué buscas una sola vez. Cada día revisamos los
+        portales, descartamos los anuncios sospechosos y te mandamos los mejores
+        por WhatsApp.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#registro">Empezar gratis</a>
+        <span class="reassure">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Revisamos cada anuncio contra fraudes
+        </span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="label">Cómo funciona</span>
+      <h2>Tres pasos y ya. Sin apps, sin revisar portales.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h3>Nos dices qué buscas</h3>
+        <p>Zona, presupuesto, si es depa completo o cuarto para compartir.
+          Lo llenas una vez, aquí abajo.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h3>Buscamos y filtramos por ti</h3>
+        <p>Cada día revisamos los portales más grandes y descartamos los
+          anuncios que huelen a fraude.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h3>Te llegan por WhatsApp</h3>
+        <p>Solo los que encajan contigo, directo a tu chat. Tú decides cuáles
+          visitar. Nada de spam.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <div class="trust-grid">
+      <div>
+        <span class="label">Sin sustos</span>
+        <h2 style="margin:14px 0 20px;">Antes de mandarte un anuncio, lo revisamos.</h2>
+        <p style="color:var(--ink-2); margin-bottom:24px; max-width:46ch;">
+          Los montarrentas se aprovechan de la prisa por encontrar casa. Nosotros
+          revisamos cada anuncio contra las señales más comunes de fraude. Si algo
+          no cuadra, no te llega.</p>
+        <div class="checks">
+          <div class="check">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span><b>Precio demasiado bajo</b> para lo que cuesta esa zona.</span>
+          </div>
+          <div class="check">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span><b>Cuentas que publican el mismo depa</b> en muchas colonias a la vez.</span>
+          </div>
+          <div class="check">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span><b>Textos que te apuran</b> a apartar o depositar sin antes visitar.</span>
+          </div>
+        </div>
+      </div>
+      <div class="phone" aria-hidden="true">
+        <div class="phone-top">
+          <div class="phone-avatar">D</div>
+          <div>
+            <div class="phone-name">DepaRadar</div>
+            <div class="phone-status">en línea</div>
+          </div>
+        </div>
+        <div class="bubble">
+          <span class="b-title">Buenos días 👋 Hoy encontré 3 para ti:</span>
+          <span class="b-item">Depa 2 rec · Narvarte · $13,500</span>
+          <span class="b-item">Depa 1 rec · Del Valle · $11,800</span>
+          <span class="b-item">Cuarto · Roma Norte · $6,500</span>
+          <span class="b-time">9:02</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="registro">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="label">Empieza gratis</span>
+      <h2>Cuéntanos qué buscas y recíbelos por WhatsApp.</h2>
+      <p>Gratis durante la beta. Sin tarjeta, sin apps que instalar.</p>
+    </div>
+    <div class="form-card">
+      <form id="signup" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="nombre">Tu nombre</label>
+            <input id="nombre" name="nombre" type="text" placeholder="Mario" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="whatsapp">WhatsApp <span class="hint">(10 dígitos)</span></label>
+            <input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" placeholder="55 1234 5678" required>
+            <span class="form-err" data-for="whatsapp">Escribe un número de 10 dígitos.</span>
+          </div>
+          <div class="field full">
+            <label for="zonas">Zonas donde buscas <span class="hint">(sepáralas con coma)</span></label>
+            <input id="zonas" name="zonas" type="text" placeholder="Narvarte, Del Valle, Roma Norte" required>
+          </div>
+          <div class="field">
+            <label for="presupuesto">Presupuesto máximo <span class="hint">(al mes)</span></label>
+            <input id="presupuesto" name="presupuesto" type="text" inputmode="numeric" placeholder="$15,000" required>
+          </div>
+          <div class="field">
+            <label for="busca">¿Qué buscas?</label>
+            <select id="busca" name="busca">
+              <option value="Depa completo">Depa completo</option>
+              <option value="Cuarto o roomie">Cuarto o roomie</option>
+              <option value="Los dos">Los dos</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="mascota">¿Tienes mascota?</label>
+            <select id="mascota" name="mascota">
+              <option value="No">No</option>
+              <option value="Sí">Sí, busco que acepten</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Quiero mis depas</button>
+        <p class="form-note">Puedes darte de baja cuando quieras respondiendo <b>BAJA</b>.</p>
+      </form>
+      <div class="form-success" id="success">
+        <div class="tick">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h3>¡Listo, quedaste en la lista!</h3>
+        <p>Pronto te llega tu primera tanda de depas por WhatsApp. Revisa que el
+          número que pusiste sea el correcto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="label">Preguntas</span>
+      <h2>Lo que seguro te estás preguntando.</h2>
+    </div>
+    <div class="faq col" style="max-width:720px;">
+      <details>
+        <summary>¿De dónde salen los anuncios? <span class="plus">+</span></summary>
+        <div class="answer">De los portales públicos de renta más grandes de México.
+          Nosotros los juntamos, los filtramos y te enlazamos al anuncio original —
+          tú contactas directo a quien lo publica.</div>
+      </details>
+      <details>
+        <summary>¿Cuánto cuesta? <span class="plus">+</span></summary>
+        <div class="answer">Durante la beta es gratis. Más adelante habrá un plan
+          de pago accesible, pero quienes entren ahora conservan condiciones especiales.</div>
+      </details>
+      <details>
+        <summary>¿Cómo me doy de baja? <span class="plus">+</span></summary>
+        <div class="answer">Respondes <b>BAJA</b> por WhatsApp y dejamos de escribirte.
+          Sin llamadas, sin trámites.</div>
+      </details>
+      <details>
+        <summary>¿Venden mis datos? <span class="plus">+</span></summary>
+        <div class="answer">No. Usamos tu WhatsApp y tus preferencias solo para
+          mandarte los depas que encajan contigo. Nada más.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span class="brand"><span class="dot"></span>DepaRadar</span>
+    <span>Hecho en la Ciudad de México · Encuentra casa sin el estrés de siempre.</span>
+  </div>
+</footer>
+
+<script>
+  // Endpoint de Google Apps Script (escribe a la Sheet de registros)
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz-5fu-_NUryGwB03ZnIlRbZe0GyJKMcsA-z3brSUI-HJBLXkXZVMWx29BrjyFXvM5Y5Q/exec';
+
+  const form = document.getElementById('signup');
+  const success = document.getElementById('success');
+
+  function showErr(name, show) {
+    const el = document.querySelector(`.form-err[data-for="${name}"]`);
+    if (el) el.style.display = show ? 'block' : 'none';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    // validación amable
+    const phone = (data.whatsapp || '').replace(/\D/g, '');
+    if (phone.length !== 10) { showErr('whatsapp', true); return; }
+    showErr('whatsapp', false);
+    if (!data.nombre.trim() || !data.zonas.trim() || !data.presupuesto.trim()) return;
+
+    const btn = form.querySelector('button');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+
+    try {
+      if (FORM_ENDPOINT) {
+        await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(data).toString(),
+        });
+      }
+    } catch (_) { /* respuesta opaca por no-cors; seguimos optimistas */ }
+
+    form.style.display = 'none';
+    success.classList.add('show');
+  });
+</script>
+</body>
+</html>
