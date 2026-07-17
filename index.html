@@ -335,6 +335,20 @@
             </select>
           </div>
           <div class="field">
+            <label for="banos">Baños mínimos</label>
+            <select id="banos" name="banos">
+              <option value="1 o más">1 o más</option>
+              <option value="2 o más">2 o más</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="estacionamiento">¿Necesitas estacionamiento?</label>
+            <select id="estacionamiento" name="estacionamiento">
+              <option value="No importa">No importa</option>
+              <option value="Sí, necesito">Sí, necesito</option>
+            </select>
+          </div>
+          <div class="field">
             <label for="mascota">¿Tienes mascota?</label>
             <select id="mascota" name="mascota">
               <option value="No">No</option>
@@ -418,12 +432,15 @@
     showErr('whatsapp', false);
     if (!data.nombre.trim() || !data.zonas.trim() || !data.presupuesto.trim()) return;
 
-    // Recámaras viaja DENTRO de "busca" (columna F del Sheet): el Apps Script
-    // publicado guarda solo las 7 columnas originales y así no hay que tocarlo.
-    if (data.recamaras) {
-      data.busca = `${data.busca} · mínimo ${data.recamaras.charAt(0)} rec`;
-      delete data.recamaras;
-    }
+    // Los extras viajan DOBLE: como parámetros propios (columnas H-J cuando
+    // el Apps Script las guarde) Y embebidos en "busca" (columna F, respaldo
+    // que funciona con el script actual). El intake prioriza H-J sobre F.
+    if (data.recamaras && data.recamaras.charAt(0) !== '1')
+      data.busca += ` · mínimo ${data.recamaras.charAt(0)} rec`;
+    if (data.banos && data.banos.charAt(0) !== '1')
+      data.busca += ` · mínimo ${data.banos.charAt(0)} baños`;
+    if ((data.estacionamiento || '').startsWith('Sí'))
+      data.busca += ' · con estacionamiento';
 
     const btn = form.querySelector('button');
     btn.disabled = true; btn.textContent = 'Enviando…';
