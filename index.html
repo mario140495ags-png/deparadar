@@ -326,7 +326,15 @@
               <option value="Los dos">Los dos</option>
             </select>
           </div>
-          <div class="field full">
+          <div class="field">
+            <label for="recamaras">Recámaras mínimas <span class="hint">(si buscas depa)</span></label>
+            <select id="recamaras" name="recamaras">
+              <option value="1 o más">1 o más</option>
+              <option value="2 o más">2 o más</option>
+              <option value="3 o más">3 o más</option>
+            </select>
+          </div>
+          <div class="field">
             <label for="mascota">¿Tienes mascota?</label>
             <select id="mascota" name="mascota">
               <option value="No">No</option>
@@ -409,6 +417,13 @@
     if (phone.length !== 10) { showErr('whatsapp', true); return; }
     showErr('whatsapp', false);
     if (!data.nombre.trim() || !data.zonas.trim() || !data.presupuesto.trim()) return;
+
+    // Recámaras viaja DENTRO de "busca" (columna F del Sheet): el Apps Script
+    // publicado guarda solo las 7 columnas originales y así no hay que tocarlo.
+    if (data.recamaras) {
+      data.busca = `${data.busca} · mínimo ${data.recamaras.charAt(0)} rec`;
+      delete data.recamaras;
+    }
 
     const btn = form.querySelector('button');
     btn.disabled = true; btn.textContent = 'Enviando…';
