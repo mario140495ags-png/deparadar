@@ -153,6 +153,13 @@
   .field input:focus, .field select:focus { outline:none;
     border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
   .field input::placeholder { color:var(--ink-3); }
+  .range-row { display:flex; align-items:center; gap:10px; }
+  .range-row input { flex:1; min-width:0; font-family:var(--sans); font-size:1rem;
+    color:var(--ink); background:var(--paper); border:1px solid var(--line);
+    border-radius:var(--r-sm); padding:13px 15px; transition:.15s; }
+  .range-row input:focus { outline:none; border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft); }
+  .range-sep { color:var(--ink-3); font-weight:600; flex:none; }
   .form-card .btn-primary { width:100%; justify-content:center; margin-top:6px; }
   .form-note { font-size:.85rem; color:var(--ink-3); text-align:center; margin-top:16px; }
   .form-success { display:none; text-align:center; padding:24px 8px; }
@@ -339,9 +346,14 @@
             <input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" placeholder="55 1234 5678" required>
             <span class="form-err" data-for="whatsapp">Escribe un número de 10 dígitos.</span>
           </div>
-          <div class="field">
-            <label for="presupuesto">Presupuesto máximo <span class="hint">(al mes)</span></label>
-            <input id="presupuesto" name="presupuesto" type="text" inputmode="numeric" placeholder="$15,000" required>
+          <div class="field full">
+            <label>Presupuesto mensual <span class="hint">(rango)</span></label>
+            <div class="range-row">
+              <input id="presupuesto_min" name="presupuesto_min" type="text" inputmode="numeric" placeholder="Desde $8,000" required>
+              <span class="range-sep">—</span>
+              <input id="presupuesto_max" name="presupuesto_max" type="text" inputmode="numeric" placeholder="Hasta $15,000" required>
+            </div>
+            <span class="form-err" data-for="presupuesto">Pon un rango válido (mínimo menor que máximo).</span>
           </div>
           <div class="field">
             <label for="busca">¿Qué buscas?</label>
@@ -551,7 +563,15 @@
     const alcs = alcaldiaCombo.values(), cols = coloniaCombo.values();
     if (!alcs.length) { showErr('alcaldia', true); return; }
     showErr('alcaldia', false);
-    if (!data.nombre.trim() || !data.presupuesto.trim()) return;
+    if (!data.nombre.trim()) return;
+
+    // Presupuesto como RANGO → viaja combinado en "presupuesto" (col E): "8000-15000"
+    const bmin = parseInt((data.presupuesto_min || '').replace(/\D/g, ''), 10) || 0;
+    const bmax = parseInt((data.presupuesto_max || '').replace(/\D/g, ''), 10) || 0;
+    if (!bmax || bmin > bmax) { showErr('presupuesto', true); return; }
+    showErr('presupuesto', false);
+    data.presupuesto = bmin + '-' + bmax;
+    delete data.presupuesto_min; delete data.presupuesto_max;
 
     // Alcaldías + colonias viajan combinadas en "zonas" (columna D del Sheet):
     // el intake ya las parsea, sin tocar el Apps Script.
