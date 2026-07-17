@@ -432,15 +432,8 @@
     showErr('whatsapp', false);
     if (!data.nombre.trim() || !data.zonas.trim() || !data.presupuesto.trim()) return;
 
-    // Los extras viajan DOBLE: como parámetros propios (columnas H-J cuando
-    // el Apps Script las guarde) Y embebidos en "busca" (columna F, respaldo
-    // que funciona con el script actual). El intake prioriza H-J sobre F.
-    if (data.recamaras && data.recamaras.charAt(0) !== '1')
-      data.busca += ` · mínimo ${data.recamaras.charAt(0)} rec`;
-    if (data.banos && data.banos.charAt(0) !== '1')
-      data.busca += ` · mínimo ${data.banos.charAt(0)} baños`;
-    if ((data.estacionamiento || '').startsWith('Sí'))
-      data.busca += ' · con estacionamiento';
+    // Los extras viajan como parámetros propios → columnas H-J del Sheet
+    // (el Apps Script v2 ya las guarda; el intake las lee con prioridad).
 
     const btn = form.querySelector('button');
     btn.disabled = true; btn.textContent = 'Enviando…';
